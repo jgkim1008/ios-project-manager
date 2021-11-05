@@ -15,8 +15,7 @@ struct TaskListView: View {
     @ObservedObject var viewModel: TaskListViewModel
     
     var body: some View {
-        print(#function)
-        return List{
+        List{
             Section(header: Text(memoStatus.rawValue).font(.title3).foregroundColor(.black)) {
                 ForEach(viewModel.selectTaskList(through: memoStatus), id: \.self) { task in
                     RowView(memoStatus: memoStatus, viewModel: viewModel, task: task)
