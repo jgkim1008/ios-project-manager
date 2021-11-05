@@ -11,14 +11,17 @@ import SwiftUI
 
 struct TaskListView: View {
     @State var memoStatus : Status
-    @ObservedObject var viewModel: TaskListViewModel = TaskListViewModel()
-  
+    @State var longPressed: Bool = false
+    @ObservedObject var viewModel: TaskListViewModel
+    
     var body: some View {
-        List{
+        print(#function)
+        return List{
             Section(header: Text(memoStatus.rawValue).font(.title3).foregroundColor(.black)) {
-                RowView(memoStatus: memoStatus, viewModel: viewModel)
+                ForEach(viewModel.selectTaskList(through: memoStatus), id: \.self) { task in
+                    RowView(memoStatus: memoStatus, viewModel: viewModel, task: task)
+                }
             }
-            
         }
     }
 }

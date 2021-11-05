@@ -10,7 +10,7 @@ import SwiftUI
 struct NewTaskView: View {
     @Environment(\.presentationMode) var presentationMode
     
-    @StateObject var viewModel = NewTaskViewModel()
+    @ObservedObject var viewModel: TaskListViewModel
     @State var title = ""
     @State var date = Date()
     @State var message: String = ""

@@ -16,9 +16,9 @@ struct ProjectManagerContentView: View {
     var body: some View {
         NavigationView {
             HStack(alignment: .firstTextBaseline) {
-                TaskListView(memoStatus: .TODO)
-                TaskListView(memoStatus: .DOING)
-                TaskListView(memoStatus: .DONE)
+                TaskListView(memoStatus: .TODO ,viewModel: viewModel)
+                TaskListView(memoStatus: .DOING ,viewModel: viewModel)
+                TaskListView(memoStatus: .DONE ,viewModel: viewModel)
             }
             .padding(.top)
             .padding(.bottom)
@@ -28,13 +28,9 @@ struct ProjectManagerContentView: View {
         }
         .navigationViewStyle(StackNavigationViewStyle())
         .sheet(isPresented: $isShowingAddNew, onDismiss: {
-            viewModel.fetchTasks()
             print(viewModel.tasks)
         }) {
-            NewTaskView()
-        }
-        .onAppear {
-            viewModel.fetchTasks()
+            NewTaskView(viewModel: viewModel)
         }
     }
     

@@ -9,18 +9,20 @@ import Combine
 import SwiftUI
 
 protocol TaskListViewModelProtocol {
-    var tasks: [TLTask] { get }
+    var tasks: [TLTask] { get set }
     func fetchTasks()
     func filterStatus(of task: [TLTask])
     func selectTaskList(through status: Status) -> [TLTask]
-//    func updateTaskList(task: TLTask, status: Status, title: String, message: String, date: Date)
+    func addNewTask(title: String,message: String, date: Date, status: Status)
+    func updateTaskList(task: TLTask?, status: Status, title: String, message: String, date: Date)
+    func modifyStatus(task: TLTask, status: Status)
 }
 
 final class TaskListViewModel: ObservableObject {
     @Published var tasks: [TLTask] = []
-    @Published var todoTasks: [TLTask] = []
-    @Published var doingTasks: [TLTask] = []
-    @Published var completeTasks: [TLTask] = []
+    var todoTasks: [TLTask] = []
+    var doingTasks: [TLTask] = []
+    var completeTasks: [TLTask] = []
     
     private var dataManager: DataManagerProtocol
     
@@ -37,8 +39,8 @@ extension TaskListViewModel: TaskListViewModelProtocol {
     }
     
     func filterStatus(of task: [TLTask]) {
-        tasks.forEach { task in
-            switch task.status {
+        Status.allCases.forEach { status in
+            switch status {
             case .TODO:
                 todoTasks = tasks.filter { $0.status == .TODO }.sorted{ $0.date < $1.date}
             case .DOING:
@@ -59,6 +61,34 @@ extension TaskListViewModel: TaskListViewModelProtocol {
             return completeTasks
         }
     }
+    
+    func addNewTask(title: String, message: String, date: Date, status: Status) {
+        dataManager.addTask(title: title, message: message, date: date, status: status)
+        fetchTasks()
+    }
+    
+    func updateTaskList(task: TLTask?, status: Status, title: String, message: String, date: Date) {
+        dataManager.updateTaskList(task: task, status: status, title: title, message: message, date: date)
+        fetchTasks()
+    }
+    
+    func delete(task: TLTask) {
+        dataManager.deleteTask(task: task)
+        fetchTasks()
+    }
+    
+    func modifyStatus(task: TLTask, status: Status) {
+        dataManager.modifyStatus(task: task, status: status)
+        fetchTasks()
+    }
+    
+
+    func deadlineOver(date: Date) -> Bool {
+        date < Date() ? true : false
+    }
+    
+    
+    
     
 //    func updateTaskList(task: TLTask, status: Status, title: String, message: String, date: Date) {
 //        switch status {
